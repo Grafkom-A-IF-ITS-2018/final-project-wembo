@@ -24,6 +24,10 @@ function getRandomArbitrary() {
   return Math.random() * (max - min) + min;
 }
 
+//sound
+var bite=new Audio('assets/Bite.mp3');
+var pain=new Audio('assets/Pain.mp3');
+
 function init(){
   scene = new THREE.Scene();
   
@@ -249,7 +253,7 @@ function flyObject(){
       particle.position.x = xLimit;
       particle.position.y = -yLimit + Math.random()*yLimit*2;
       particle.position.z = zLocationParticles;
-      particle.name='food';
+      particle.name="food";
       var s = .1 + getRandomArbitrary();
       particle.scale.set(s,s,s);
       flyingParticles.push(particle);
@@ -259,7 +263,7 @@ function flyObject(){
     particle.position.x = xLimit;
     particle.position.y = -yLimit + Math.random()*yLimit*2;
     particle.position.z = zLocationParticles;
-    particle.name='obstacle';
+    particle.name="obstacle";
     var s = .1 + getRandomArbitrary();
     particle.scale.set(s,s,s);
     flyingParticles.push(particle);
@@ -307,7 +311,18 @@ function detectCollision(){
     var yf=fish.position.y;
     var sf=fish.scale.x;
     if(isCollision(xp,yp,sp,xf,yf,sf)){
-      scene.remove(particle);
+      console.log(flyingParticles[i].name," food ",flyingParticles[i].name=="food");
+      if(flyingParticles[i].name=="food"){
+        bite.play();
+      }
+      else{
+        pain.play();
+      }
+      scene.remove(flyingParticles[i]);
+      console.log(flyingParticles.length);
+      flyingParticles.splice(i,1);
+      console.log(flyingParticles.length);
+      break;
     }
   }
 }
@@ -317,4 +332,4 @@ createStats();
 createLight();
 createParticle();
 setInterval(flyObject, 500);
-setInterval(detectCollision, 0.000001);
+setInterval(detectCollision, 2);
