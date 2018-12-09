@@ -122,7 +122,7 @@ THREE.DRACOLoader.setDecoderPath( 'js/libs/draco/gltf/' );
     scene.add(light);
     shadowLight = new THREE.DirectionalLight(0xffffff, .8);
     shadowLight.position.set(1, 1, 1);
-      scene.add(shadowLight);
+    scene.add(shadowLight);
 
     mixer = new THREE.AnimationMixer(fish);
 
@@ -155,6 +155,13 @@ function loop() {
     }
   }
   
+      var ray = new THREE.Ray( fish.position, fish.position+5 );
+      var collisionResults = ray.intersectObjects( collidableMeshList );
+      if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
+      {
+          collisionResults[0].objects.position.x=-10;
+      }
+      
   renderer.render(scene, camera);
   stats.update();
   requestAnimationFrame(loop);
