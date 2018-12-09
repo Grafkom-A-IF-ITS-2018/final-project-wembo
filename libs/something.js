@@ -8,12 +8,6 @@ var flyingParticles = [];
     zLocationParticles=0;
 // SPEED
 var speed = {x:0, y:0};
-var smoothing = 10;
-
-// MISC
-var mousePos = {x:0, y:0};
-var stats;
-var halfPI = Math.PI/2;
 
 function getRandomArbitrary() {
   var max=0.6;
