@@ -71,8 +71,9 @@ function onWindowResize() {
 
 if (window.DeviceOrientationEvent) {
   window.addEventListener("deviceorientation", function () {
-    mousePos = {x:event.alpha, y:event.beta};
-    updateSpeed()
+    mousePos = {x:event.gamma, y:event.beta};
+    speed.y=(mousePos.y);
+    speed.x=(mousePos.x+20);
   }, true);
 }
 
