@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+        <title>three.js webgl - morph targets - horse</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <style>
+            body {
+                font-family: Monospace;
+                background-color: #f0f0f0;
+                margin: 0px;
+                overflow: hidden;
+            }
+        </style>
+	</head>
+	<body>
+
+        <div id="container"></div>
+
+
+
+		<script src="libs/three.js"></script>
+		<script src="libs/stats.min.js"></script>
+        <script src="libs/GLTFLoader.js"></script>
+        <script src="libs/DRACOLoader.js"></script>
+        <script src="libs/OrbitControls.js"></script>
+        
+		<script>
+
+			var scene, camera, pointLight, stats;
+			var renderer, mixer, controls;
+			var clock = new THREE.Clock();
+			var container = document.getElementById( 'container' );
+            
+            stats = new Stats();
+			container.appendChild( stats.dom );
+			renderer = new THREE.WebGLRenderer( { antialias: true } );
+			renderer.setPixelRatio( window.devicePixelRatio );
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			renderer.gammaOutput = true;
+			renderer.gammaFactor = 2.2;
+			container.appendChild( renderer.domElement );
+            
+            scene = new THREE.Scene();
+			scene.background = new THREE.Color( 0xbfe3dd );
+            
+            camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 100 );
+			camera.position.set( 5, 2, 10 );
+            
+            controls = new THREE.OrbitControls( camera, renderer.domElement );
+			controls.target.set( 0, 0.5, 0 );
+			controls.enablePan = false;
+            
+			scene.add( new THREE.AmbientLight( 0x404040 ) );
+			var light = new THREE.DirectionalLight( 0xffffff );
+			light.position.set( 1, 1, 1 ).normalize();
+			scene.add( light );
+			// pointLight = new THREE.PointLight( 0xffffff, 1 );
+			// pointLight.position.copy( camera.position );
+			// scene.add( pointLight );
+            
+            
+			THREE.DRACOLoader.setDecoderPath( 'js/libs/draco/gltf/' );
+			var loader = new THREE.GLTFLoader();
+            loader.setDRACOLoader( new THREE.DRACOLoader() );
+            
+
+			loader.load('assets/untitled.gltf', function ( gltf ) {
+
+                
+                
+                var model = gltf.scene;
+
+				console.log(model)
+
+                model.rotation.y += 3;
+                
+				model.position.set( 0, 0, 0 );
+				model.scale.set( 1, 1, 1 );
+				model.traverse( function ( child ) {
+                    if ( child.isMesh ){
+                        console.log(child.material);
+                    }
+				} );
+                
+                scene.add( model );
+				mixer = new THREE.AnimationMixer( model );
+	
+				mixer.clipAction( gltf.animations[0]).play();
+				// //mixer.clipAction( gltf.animations[1]).play();
+                
+                animate();
+			}, undefined, function ( e ) {
+				console.error( e );
+            } );
+            
+			window.onresize = function () {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+            };
+            
+			function animate() {
+				requestAnimationFrame( animate );
+				var delta = clock.getDelta();
+				mixer.update( delta );
+				controls.update( delta );
+				stats.update();
+				renderer.render( scene, camera );
+			}
+
+		</script>
+
+	</body>
+</html>

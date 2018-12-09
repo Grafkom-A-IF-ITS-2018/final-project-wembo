@@ -882,25 +882,42 @@
     "materials" : [
         {
             "alphaMode" : "BLEND",
+            "emissiveFactor" : [
+                0.04794086143374443,
+                0.04794086143374443,
+                0.04794086143374443
+            ],
             "name" : "Material",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
                     "index" : 0
-                }
+                },
+                "metallicFactor" : 0.5
             }
         },
         {
+            "emissiveFactor" : [
+                0.03149575740098953,
+                0.03149575740098953,
+                0.03149575740098953
+            ],
             "name" : "Material.001",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
                     1.0,
-                    0.05733640119433403,
-                    0.0751308798789978,
+                    0.148369699716568,
+                    0.1633586883544922,
                     1.0
-                ]
+                ],
+                "metallicFactor" : 0.5
             }
         },
         {
+            "emissiveFactor" : [
+                1.0,
+                1.0,
+                1.0
+            ],
             "name" : "Material.002",
             "pbrMetallicRoughness" : {}
         },
