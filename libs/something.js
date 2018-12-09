@@ -155,26 +155,11 @@ function loop() {
     }
   }
   
-  // for (var vertexIndex = 0; vertexIndex < fish.geometry.vertices.length; vertexIndex++)
-  // {       
-  //   var localVertex = fish.geometry.vertices[vertexIndex].clone();
-  //   var globalVertex = fish.matrix.multiplyVector3(localVertex);
-  //   var directionVector = globalVertex.subSelf( fish.position );
-
-  //   var ray = new THREE.Ray( fish.position, directionVector.clone().normalize() );
-  //   var collisionResults = ray.intersectObjects( flyingParticles );
-  //   if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
-  //   {
-  //     collisionResults[0].intersectObjects.position.x += -100;
-  //   }
-  // }
-
   renderer.render(scene, camera);
   stats.update();
   requestAnimationFrame(loop);
   var delta = clock.getDelta();
   mixer.update( delta );
-  
 }
 
 function createStats() {
