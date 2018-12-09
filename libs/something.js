@@ -108,6 +108,13 @@ function updateSpeed(){
   speed.y = (mousePos.y-windowHalfY) / 10;
 }
 
+function createLight() {
+  light = new THREE.HemisphereLight(0xffffff, 0xffffff, .3)
+  scene.add(light);
+  shadowLight = new THREE.DirectionalLight(0xffffff, .8);
+  shadowLight.position.set(1, 1, 1);
+ 	scene.add(shadowLight);
+}
 
   THREE.DRACOLoader.setDecoderPath( 'js/libs/draco/gltf/' );
 		var loader = new THREE.GLTFLoader();
@@ -119,6 +126,11 @@ function updateSpeed(){
       fish.scale.set(50, 50, 50);
           
       scene.add(fish);
+      light = new THREE.HemisphereLight(0xffffff, 0xffffff, .3)
+      scene.add(light);
+      shadowLight = new THREE.DirectionalLight(0xffffff, .8);
+      shadowLight.position.set(1, 1, 1);
+       scene.add(shadowLight);
 
       mixer = new THREE.AnimationMixer(fish);
 	
