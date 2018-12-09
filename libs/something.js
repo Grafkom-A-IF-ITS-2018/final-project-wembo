@@ -143,14 +143,11 @@ function loop() {
     }
   }
   
-
-
   renderer.render(scene, camera);
   stats.update();
   requestAnimationFrame(loop);
   var delta = clock.getDelta();
   mixer.update( delta );
-  
 }
 
 function createStats() {
