@@ -262,9 +262,9 @@ function hexToRgb(hex) {
 function isCollision(xp,yp,sp,xf,yf,sf) {
   var xCollide=false;
   var yCollide=false;
-  sp=sp*1.5;
-  sf=sf*1.5;
-  if(xp<xf&&xp+sp>=xf-sf) xCollide=true;
+  sf*=2;
+  sp*=2;
+  if(xp<xf&&xp+sp>=xf-sf)xCollide=true;
   if(xf<xp&&xf+sf>=xp-sp) xCollide=true;
   if(xf==xp) xCollide=true;
   if(yp<yf&&yp+sp>=yf-sf) yCollide=true;
