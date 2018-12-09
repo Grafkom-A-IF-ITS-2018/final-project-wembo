@@ -69,6 +69,14 @@ function onWindowResize() {
   xLimit = yLimit *camera.aspect;
 }
 
+if (window.DeviceOrientationEvent) {
+  window.addEventListener("deviceorientation", function () {
+    mousePos = {x:event.gamma, y:event.beta};
+    speed.y=(mousePos.y);
+    speed.x=(mousePos.x+20);
+  }, true);
+}
+
 function handleMouseMove(event) {
   mousePos = {x:event.clientX, y:event.clientY};
   updateSpeed()
@@ -100,6 +108,13 @@ function updateSpeed(){
   speed.y = (mousePos.y-windowHalfY) / 10;
 }
 
+function createLight() {
+  light = new THREE.HemisphereLight(0xffffff, 0xffffff, .3)
+  scene.add(light);
+  shadowLight = new THREE.DirectionalLight(0xffffff, .8);
+  shadowLight.position.set(1, 1, 1);
+ 	scene.add(shadowLight);
+}
 
   THREE.DRACOLoader.setDecoderPath( 'js/libs/draco/gltf/' );
 		var loader = new THREE.GLTFLoader();
@@ -111,6 +126,11 @@ function updateSpeed(){
       fish.scale.set(50, 50, 50);
           
       scene.add(fish);
+      light = new THREE.HemisphereLight(0xffffff, 0xffffff, .3)
+      scene.add(light);
+      shadowLight = new THREE.DirectionalLight(0xffffff, .8);
+      shadowLight.position.set(1, 1, 1);
+       scene.add(shadowLight);
 
       mixer = new THREE.AnimationMixer(fish);
 	
