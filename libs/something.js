@@ -24,6 +24,10 @@ function getRandomArbitrary() {
   return Math.random() * (max - min) + min;
 }
 
+//sound
+var bite=new Audio('assets/Bite.mp3');
+var pain=new Audio('assets/Pain.mp3');
+
 function init(){
   scene = new THREE.Scene();
   
@@ -71,9 +75,9 @@ function onWindowResize() {
 
 if (window.DeviceOrientationEvent) {
   window.addEventListener("deviceorientation", function () {
-    mousePos = {x:event.gamma, y:event.beta};
-    speed.y=(mousePos.y);
-    speed.x=(mousePos.x+20);
+    mousePos = {x:event.beta, y:event.gamma};
+    speed.y=-(mousePos.y);
+    speed.x=(mousePos.x*2+40);
   }, true);
 }
 
@@ -108,37 +112,29 @@ function updateSpeed(){
   speed.y = (mousePos.y-windowHalfY) / 10;
 }
 
-function createLight() {
-  light = new THREE.HemisphereLight(0xffffff, 0xffffff, .3)
-  scene.add(light);
-  shadowLight = new THREE.DirectionalLight(0xffffff, .8);
-  shadowLight.position.set(1, 1, 1);
- 	scene.add(shadowLight);
-}
+THREE.DRACOLoader.setDecoderPath( 'js/libs/draco/gltf/' );
+  var loader = new THREE.GLTFLoader();
+  loader.setDRACOLoader( new THREE.DRACOLoader() );
 
-  THREE.DRACOLoader.setDecoderPath( 'js/libs/draco/gltf/' );
-		var loader = new THREE.GLTFLoader();
-    loader.setDRACOLoader( new THREE.DRACOLoader() );
+  loader.load('../assets/pink_fish.gltf', function ( gltf ) {
+    fish = gltf.scene;
 
-		loader.load('../assets/pink_fish.gltf', function ( gltf ) {
-      fish = gltf.scene;
+    fish.scale.set(50, 50, 50);
+        
+    scene.add(fish);
+    light = new THREE.HemisphereLight(0xffffff, 0xffffff, .3)
+    scene.add(light);
+    shadowLight = new THREE.DirectionalLight(0xffffff, .8);
+    shadowLight.position.set(1, 1, 1);
+    scene.add(shadowLight);
 
-      fish.scale.set(50, 50, 50);
-          
-      scene.add(fish);
-      light = new THREE.HemisphereLight(0xffffff, 0xffffff, .3)
-      scene.add(light);
-      shadowLight = new THREE.DirectionalLight(0xffffff, .8);
-      shadowLight.position.set(1, 1, 1);
-       scene.add(shadowLight);
+    mixer = new THREE.AnimationMixer(fish);
 
-      mixer = new THREE.AnimationMixer(fish);
-	
-			mixer.clipAction( gltf.animations[0]).play();
-      mixer.clipAction( gltf.animations[1]).play();
-      
-      loop();
-  });
+    mixer.clipAction( gltf.animations[0]).play();
+    mixer.clipAction( gltf.animations[1]).play();
+    
+    loop();
+});
 
 function loop() {  
   fish.rotation.z += ((-speed.y/50)-fish.rotation.z)/smoothing;
@@ -196,23 +192,16 @@ function createParticle(){
   var rnd = Math.random();
   
   //box
-  if (rnd<.33){
+  if (rnd<.5){
     w = 20 + getRandomArbitrary()*30;
     h = 20 + getRandomArbitrary()*30;
     d = 20 + getRandomArbitrary()*30;
     geometryCore = new THREE.BoxGeometry(w,h,d);
   }
   // Tetrahedron
-  else if (rnd<.66){
+  else{
     ray = 20 + getRandomArbitrary()*30;
     geometryCore = new THREE.TetrahedronGeometry(ray);
-  }
-  // sphere (but random on segment vert and hor)
-  else{
-    ray = 5+getRandomArbitrary()*30;
-    sh = 7 + Math.floor(getRandomArbitrary()*2);
-    sv = 7 + Math.floor(getRandomArbitrary()*2);
-    geometryCore = new THREE.SphereGeometry(ray, sh, sv);
   }
   
   var materialCore = new THREE.MeshLambertMaterial({
@@ -220,34 +209,67 @@ function createParticle(){
     shading: THREE.FlatShading
   });
   particle = new THREE.Mesh(geometryCore, materialCore);
+  geometryCore.computeBoundingSphere();
+  particle.boundingSphere=geometryCore.boundingSphere;
+//  particle.name='obstacle';
+  //console.log(particle.boundingSphere.radius);
   return particle;
 }
 
-
+function createFood(){
+  var particle, geometryCore, ray, w,h,d, sh, sv;
+  ray = 5+getRandomArbitrary()*30;
+  sh = 7 + Math.floor(getRandomArbitrary()*2);
+  sv = 7 + Math.floor(getRandomArbitrary()*2);
+  geometryCore = new THREE.SphereGeometry(ray, sh, sv);
+  var materialCore = new THREE.MeshLambertMaterial({
+    color: 0x000000,
+    shading: THREE.FlatShading
+  });
+  particle = new THREE.Mesh(geometryCore, materialCore);
+  return particle;
+}
 
 function getParticle(){
   
-  if (waitingParticles.length && flyingParticles.length<10) {
+  if (waitingParticles.length ) {
     return waitingParticles.pop();
   }else{
     return createParticle();
   }
 }
+function getFood(){ 
+  if (waitingParticles.length) {
+    return waitingParticles.pop();
+  }else{
+    return createFood();
+  }
+}
 
-function flyParticle(){
+function flyObject(){
   if(flyingParticles.length<10){
+    if(Math.random()>.1 && Math.random()<.3){
+      var particle=getFood();
+      particle.position.x = xLimit;
+      particle.position.y = -yLimit + Math.random()*yLimit*2;
+      particle.position.z = zLocationParticles;
+      particle.name="food";
+      var s = .1 + getRandomArbitrary();
+      particle.scale.set(s,s,s);
+      flyingParticles.push(particle);
+      scene.add(particle);
+    }
     var particle = getParticle();
     particle.position.x = xLimit;
     particle.position.y = -yLimit + Math.random()*yLimit*2;
     particle.position.z = zLocationParticles;
+    particle.name="obstacle";
     var s = .1 + getRandomArbitrary();
     particle.scale.set(s,s,s);
     flyingParticles.push(particle);
      scene.add(particle);
   }
 }
-
-
 
 function getRandomColor(){
   var col = hexToRgb(colors[Math.floor(Math.random()*colors.length)]);
@@ -264,8 +286,50 @@ function hexToRgb(hex) {
   } : null;
 }
 
+function isCollision(xp,yp,sp,xf,yf,sf) {
+  var xCollide=false;
+  var yCollide=false;
+  sf*=2;
+  sp*=2;
+  if(xp<xf&&xp+sp>=xf-sf)xCollide=true;
+  if(xf<xp&&xf+sf>=xp-sp) xCollide=true;
+  if(xf==xp) xCollide=true;
+  if(yp<yf&&yp+sp>=yf-sf) yCollide=true;
+  if(yf<yp&&yf+sf>=yp-sp) yCollide=true;
+  if(yf==yp) yCollide=true;
+  if(xCollide&&yCollide) return true;
+  return false;
+}
+
+function detectCollision(){
+  for(var i=0;i<flyingParticles.length;i++){
+    var particle=flyingParticles[i];
+    var xp=particle.position.x;
+    var yp=particle.position.y;
+    var sp=particle.scale.x;
+    var xf=fish.position.x;
+    var yf=fish.position.y;
+    var sf=fish.scale.x;
+    if(isCollision(xp,yp,sp,xf,yf,sf)){
+      console.log(flyingParticles[i].name," food ",flyingParticles[i].name=="food");
+      if(flyingParticles[i].name=="food"){
+        bite.play();
+      }
+      else{
+        pain.play();
+      }
+      scene.remove(flyingParticles[i]);
+      console.log(flyingParticles.length);
+      flyingParticles.splice(i,1);
+      console.log(flyingParticles.length);
+      break;
+    }
+  }
+}
+
 init();
 createStats();
 createLight();
 createParticle();
-setInterval(flyParticle, 100);
+setInterval(flyObject, 500);
+setInterval(detectCollision, 2);
