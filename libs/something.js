@@ -69,6 +69,14 @@ function onWindowResize() {
   xLimit = yLimit *camera.aspect;
 }
 
+if (window.DeviceOrientationEvent) {
+  window.addEventListener("deviceorientation", function () {
+    mousePos = {x:event.beta, y:event.gamma};
+    speed.y=(mousePos.y);
+    speed.x=-(mousePos.x*2-40);
+  }, true);
+}
+
 function handleMouseMove(event) {
   mousePos = {x:event.clientX, y:event.clientY};
   updateSpeed()
@@ -100,25 +108,29 @@ function updateSpeed(){
   speed.y = (mousePos.y-windowHalfY) / 10;
 }
 
-
-  THREE.DRACOLoader.setDecoderPath( 'js/libs/draco/gltf/' );
-	var loader = new THREE.GLTFLoader();
+THREE.DRACOLoader.setDecoderPath( 'js/libs/draco/gltf/' );
+  var loader = new THREE.GLTFLoader();
   loader.setDRACOLoader( new THREE.DRACOLoader() );
 
-	loader.load('../assets/pink_fish.gltf', function ( gltf ) {
+  loader.load('../assets/pink_fish.gltf', function ( gltf ) {
     fish = gltf.scene;
 
     fish.scale.set(50, 50, 50);
         
     scene.add(fish);
+    light = new THREE.HemisphereLight(0xffffff, 0xffffff, .3)
+    scene.add(light);
+    shadowLight = new THREE.DirectionalLight(0xffffff, .8);
+    shadowLight.position.set(1, 1, 1);
+      scene.add(shadowLight);
 
     mixer = new THREE.AnimationMixer(fish);
 
-		mixer.clipAction( gltf.animations[0]).play();
+    mixer.clipAction( gltf.animations[0]).play();
     mixer.clipAction( gltf.animations[1]).play();
     
     loop();
-  });
+});
 
 function loop() {  
   fish.rotation.z += ((-speed.y/50)-fish.rotation.z)/smoothing;
@@ -143,14 +155,11 @@ function loop() {
     }
   }
   
-
-
   renderer.render(scene, camera);
   stats.update();
   requestAnimationFrame(loop);
   var delta = clock.getDelta();
   mixer.update( delta );
-  
 }
 
 function createStats() {
