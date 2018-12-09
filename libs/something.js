@@ -1,5 +1,8 @@
 var scene, camera,fieldOfView,aspesctRatio,nearPlane,farPlane,shadowLight,light,renderer,container,
-    HEIGHT,WIDTH,windowHalfX,windowHalfY,xLimit,yLimit;
+    HEIGHT,WIDTH,windowHalfX,windowHalfY,xLimit,yLimit, mixer;
+
+var clock = new THREE.Clock();
+var fish;
 
 // PARTICLES
 var colors = ['#dff69e', '#00ceff', '#002bca', '#ff00e0', '#3f159f', '#71b583', '#00a2ff'];
@@ -104,7 +107,35 @@ function updateSpeed(){
   speed.y = (mousePos.y-windowHalfY) / 10;
 }
 
+
+  THREE.DRACOLoader.setDecoderPath( 'js/libs/draco/gltf/' );
+		var loader = new THREE.GLTFLoader();
+    loader.setDRACOLoader( new THREE.DRACOLoader() );
+
+		loader.load('../assets/pink_fish.gltf', function ( gltf ) {
+      fish = gltf.scene;
+
+      fish.scale.set(50, 50, 50);
+          
+      scene.add(fish);
+
+      mixer = new THREE.AnimationMixer(fish);
+	
+			mixer.clipAction( gltf.animations[0]).play();
+      mixer.clipAction( gltf.animations[1]).play();
+      
+      loop();
+  });
+
 function loop() {  
+  fish.rotation.z += ((-speed.y/50)-fish.rotation.z)/smoothing;
+  fish.rotation.x += ((-speed.y/50)-fish.rotation.x)/smoothing;
+  fish.rotation.y += ((-speed.y/50)-fish.rotation.y + 5)/smoothing;
+  
+  // make the fish move according to the mouse direction
+  fish.position.x += (((mousePos.x - windowHalfX)) - fish.position.x) / smoothing;
+  fish.position.y += ((-speed.y*10)-fish.position.y)/smoothing;
+  
   for (var i=0; i<flyingParticles.length; i++){
     var particle = flyingParticles[i];
     particle.rotation.y += (1/particle.scale.x) *.05;
@@ -118,11 +149,15 @@ function loop() {
       i--;
     }
   }
-
   
+
+
   renderer.render(scene, camera);
   stats.update();
   requestAnimationFrame(loop);
+  var delta = clock.getDelta();
+  mixer.update( delta );
+  
 }
 
 function createStats() {
@@ -223,5 +258,4 @@ init();
 createStats();
 createLight();
 createParticle();
-loop();
 setInterval(flyParticle, 100);
