@@ -15,6 +15,12 @@ var mousePos = {x:0, y:0};
 var stats;
 var halfPI = Math.PI/2;
 
+function getRandomArbitrary() {
+  var max=0.6;
+  var min=0.5;
+  return Math.random() * (max - min) + min;
+}
+
 function init(){
   scene = new THREE.Scene();
   
@@ -139,21 +145,21 @@ function createParticle(){
   
   //box
   if (rnd<.33){
-    w = 10 + Math.random()*30;
-    h = 10 + Math.random()*30;
-    d = 10 + Math.random()*30;
+    w = 20 + getRandomArbitrary()*30;
+    h = 20 + getRandomArbitrary()*30;
+    d = 20 + getRandomArbitrary()*30;
     geometryCore = new THREE.BoxGeometry(w,h,d);
   }
   // Tetrahedron
   else if (rnd<.66){
-    ray = 10 + Math.random()*20;
+    ray = 20 + getRandomArbitrary()*30;
     geometryCore = new THREE.TetrahedronGeometry(ray);
   }
   // sphere (but random on segment vert and hor)
   else{
-    ray = 5+Math.random()*30;
-    sh = 2 + Math.floor(Math.random()*2);
-    sv = 2 + Math.floor(Math.random()*2);
+    ray = 5+getRandomArbitrary()*30;
+    sh = 7 + Math.floor(getRandomArbitrary()*2);
+    sv = 7 + Math.floor(getRandomArbitrary()*2);
     geometryCore = new THREE.SphereGeometry(ray, sh, sv);
   }
   
@@ -168,7 +174,8 @@ function createParticle(){
 
 
 function getParticle(){
-  if (waitingParticles.length) {
+  
+  if (waitingParticles.length && flyingParticles.length<10) {
     return waitingParticles.pop();
   }else{
     return createParticle();
@@ -176,14 +183,16 @@ function getParticle(){
 }
 
 function flyParticle(){
-  var particle = getParticle();
-  particle.position.x = xLimit;
-  particle.position.y = -yLimit + Math.random()*yLimit*2;
-  particle.position.z = zLocationParticles;
-  var s = .1 + Math.random();
-  particle.scale.set(s,s,s);
-  flyingParticles.push(particle);
- 	scene.add(particle);
+  if(flyingParticles.length<10){
+    var particle = getParticle();
+    particle.position.x = xLimit;
+    particle.position.y = -yLimit + Math.random()*yLimit*2;
+    particle.position.z = zLocationParticles;
+    var s = .1 + getRandomArbitrary();
+    particle.scale.set(s,s,s);
+    flyingParticles.push(particle);
+     scene.add(particle);
+  }
 }
 
 
