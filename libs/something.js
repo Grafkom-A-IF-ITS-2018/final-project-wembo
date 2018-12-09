@@ -66,6 +66,13 @@ function onWindowResize() {
   xLimit = yLimit *camera.aspect;
 }
 
+if (window.DeviceOrientationEvent) {
+  window.addEventListener("deviceorientation", function () {
+    mousePos = {x:event.alpha, y:event.beta};
+    updateSpeed()
+  }, true);
+}
+
 function handleMouseMove(event) {
   mousePos = {x:event.clientX, y:event.clientY};
   updateSpeed()
