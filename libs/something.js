@@ -72,8 +72,8 @@ function onWindowResize() {
 if (window.DeviceOrientationEvent) {
   window.addEventListener("deviceorientation", function () {
     mousePos = {x:event.beta, y:event.gamma};
-    speed.y=(mousePos.y);
-    speed.x=-(mousePos.x*2-40);
+    speed.y=-(mousePos.y);
+    speed.x=(mousePos.x*2+40);
   }, true);
 }
 
@@ -155,13 +155,6 @@ function loop() {
     }
   }
   
-      var ray = new THREE.Ray( fish.position, fish.position+5 );
-      var collisionResults = ray.intersectObjects( collidableMeshList );
-      if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
-      {
-          collisionResults[0].objects.position.x=-10;
-      }
-      
   renderer.render(scene, camera);
   stats.update();
   requestAnimationFrame(loop);
