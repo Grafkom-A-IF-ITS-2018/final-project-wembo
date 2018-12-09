@@ -102,22 +102,22 @@ function updateSpeed(){
 
 
   THREE.DRACOLoader.setDecoderPath( 'js/libs/draco/gltf/' );
-		var loader = new THREE.GLTFLoader();
-    loader.setDRACOLoader( new THREE.DRACOLoader() );
+	var loader = new THREE.GLTFLoader();
+  loader.setDRACOLoader( new THREE.DRACOLoader() );
 
-		loader.load('../assets/pink_fish.gltf', function ( gltf ) {
-      fish = gltf.scene;
+	loader.load('../assets/pink_fish.gltf', function ( gltf ) {
+    fish = gltf.scene;
 
-      fish.scale.set(50, 50, 50);
-          
-      scene.add(fish);
+    fish.scale.set(50, 50, 50);
+        
+    scene.add(fish);
 
-      mixer = new THREE.AnimationMixer(fish);
-	
-			mixer.clipAction( gltf.animations[0]).play();
-      mixer.clipAction( gltf.animations[1]).play();
-      
-      loop();
+    mixer = new THREE.AnimationMixer(fish);
+
+		mixer.clipAction( gltf.animations[0]).play();
+    mixer.clipAction( gltf.animations[1]).play();
+    
+    loop();
   });
 
 function loop() {  
@@ -203,6 +203,9 @@ function createParticle(){
     shading: THREE.FlatShading
   });
   particle = new THREE.Mesh(geometryCore, materialCore);
+  geometryCore.computeBoundingSphere();
+  particle.boundingSphere=geometryCore.boundingSphere;
+  //console.log(particle.boundingSphere.radius);
   return particle;
 }
 
@@ -247,8 +250,39 @@ function hexToRgb(hex) {
   } : null;
 }
 
+function isCollision(xp,yp,sp,xf,yf,sf) {
+  var xCollide=false;
+  var yCollide=false;
+  sp=sp*1.5;
+  sf=sf*1.5;
+  if(xp<xf&&xp+sp>=xf-sf) xCollide=true;
+  if(xf<xp&&xf+sf>=xp-sp) xCollide=true;
+  if(xf==xp) xCollide=true;
+  if(yp<yf&&yp+sp>=yf-sf) yCollide=true;
+  if(yf<yp&&yf+sf>=yp-sp) yCollide=true;
+  if(yf==yp) yCollide=true;
+  if(xCollide&&yCollide) return true;
+  return false;
+}
+
+function detectCollision(){
+  for(var i=0;i<flyingParticles.length;i++){
+    var particle=flyingParticles[i];
+    var xp=particle.position.x;
+    var yp=particle.position.y;
+    var sp=particle.scale.x;
+    var xf=fish.position.x;
+    var yf=fish.position.y;
+    var sf=fish.scale.x;
+    if(isCollision(xp,yp,sp,xf,yf,sf)){
+      scene.remove(particle);
+    }
+  }
+}
+
 init();
 createStats();
 createLight();
 createParticle();
 setInterval(flyParticle, 100);
+setInterval(detectCollision, 0.000001);
