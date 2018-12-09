@@ -1,8 +1,9 @@
 var scene, camera,fieldOfView,aspesctRatio,nearPlane,farPlane,shadowLight,light,renderer,container,
-    HEIGHT,WIDTH,windowHalfX,windowHalfY,xLimit,yLimit, mixer;
+    HEIGHT,WIDTH,windowHalfX,windowHalfY,xLimit,yLimit,fish;
+
+var mixer = [];
 
 var clock = new THREE.Clock();
-var fish;
 
 // PARTICLES
 var colors = ['#dff69e', '#00ceff', '#002bca', '#ff00e0', '#3f159f', '#71b583', '#00a2ff'];
@@ -112,30 +113,6 @@ function updateSpeed(){
   speed.y = (mousePos.y-windowHalfY) / 10;
 }
 
-THREE.DRACOLoader.setDecoderPath( 'js/libs/draco/gltf/' );
-  var loader = new THREE.GLTFLoader();
-  loader.setDRACOLoader( new THREE.DRACOLoader() );
-
-  loader.load('../assets/pink_fish.gltf', function ( gltf ) {
-    fish = gltf.scene;
-
-    fish.scale.set(50, 50, 50);
-        
-    scene.add(fish);
-    light = new THREE.HemisphereLight(0xffffff, 0xffffff, .3)
-    scene.add(light);
-    shadowLight = new THREE.DirectionalLight(0xffffff, .8);
-    shadowLight.position.set(1, 1, 1);
-    scene.add(shadowLight);
-
-    mixer = new THREE.AnimationMixer(fish);
-
-    mixer.clipAction( gltf.animations[0]).play();
-    mixer.clipAction( gltf.animations[1]).play();
-    
-    loop();
-});
-
 function loop() {  
   fish.rotation.z += ((-speed.y/50)-fish.rotation.z)/smoothing;
   fish.rotation.x += ((-speed.y/50)-fish.rotation.x)/smoothing;
@@ -163,7 +140,10 @@ function loop() {
   stats.update();
   requestAnimationFrame(loop);
   var delta = clock.getDelta();
-  mixer.update( delta );
+
+  for (var i = 0; i < mixer.length; i++){
+    mixer[i].update( delta );
+  }
 }
 
 function createStats() {
@@ -184,6 +164,64 @@ function createLight() {
   shadowLight = new THREE.DirectionalLight(0xffffff, .8);
   shadowLight.position.set(1, 1, 1);
  	scene.add(shadowLight);
+}
+
+THREE.DRACOLoader.setDecoderPath( 'js/libs/draco/gltf/' );
+var loader = new THREE.GLTFLoader();
+loader.setDRACOLoader( new THREE.DRACOLoader() );
+
+function createFish(){
+  loader.load('../assets/pink_fish.gltf', function ( gltf ) {
+    fish = gltf.scene;
+
+    fish.scale.set(50, 50, 50);
+        
+    scene.add(fish);
+    light = new THREE.HemisphereLight(0xffffff, 0xffffff, .3)
+    scene.add(light);
+    shadowLight = new THREE.DirectionalLight(0xffffff, .8);
+    shadowLight.position.set(1, 1, 1);
+    scene.add(shadowLight);
+
+    mixer.push(new THREE.AnimationMixer(fish));
+
+    mixer[mixer.length-1].clipAction( gltf.animations[0]).play();
+    mixer[mixer.length-1].clipAction( gltf.animations[1]).play();
+    
+    loop();
+  });
+}
+
+function createOrnamen(){
+  loader.load('../assets/coral1.gltf', function ( gltf ) {
+    var coral = gltf.scene;
+
+    coral.scale.set(50, 50, 50);
+    
+    //moving coral to the corners of canvas
+    var plane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1));
+
+    var raycaster = new THREE.Raycaster();
+    var corner = new THREE.Vector2();
+    var cornerPoint = new THREE.Vector3();
+
+    corner.set(-0.8, -1); // NDC of the bottom-left corner
+    raycaster.setFromCamera(corner, camera);
+    raycaster.ray.intersectPlane(plane, cornerPoint);
+    coral.position.copy(cornerPoint).add(new THREE.Vector3(1, 1, -1));
+
+    coral.rotation.y += 5;
+    coral.rotation.x -= 0.25;
+
+    scene.add(coral);
+
+    mixer.push(new THREE.AnimationMixer(coral));
+    mixer[mixer.length-1].clipAction( gltf.animations[0]).play();
+    loop();
+  });
+
+
+
 }
 
 function createParticle(){
@@ -267,7 +305,7 @@ function flyObject(){
     var s = .1 + getRandomArbitrary();
     particle.scale.set(s,s,s);
     flyingParticles.push(particle);
-     scene.add(particle);
+    scene.add(particle);
   }
 }
 
@@ -330,6 +368,8 @@ function detectCollision(){
 init();
 createStats();
 createLight();
+createFish();
+createOrnamen();
 createParticle();
 setInterval(flyObject, 500);
 setInterval(detectCollision, 2);
