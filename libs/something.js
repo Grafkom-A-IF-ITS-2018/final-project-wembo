@@ -71,9 +71,9 @@ function onWindowResize() {
 
 if (window.DeviceOrientationEvent) {
   window.addEventListener("deviceorientation", function () {
-    mousePos = {x:event.gamma, y:event.beta};
+    mousePos = {x:event.beta, y:event.gamma};
     speed.y=(mousePos.y);
-    speed.x=(mousePos.x+20);
+    speed.x=-(mousePos.x*2-40);
   }, true);
 }
 
@@ -108,37 +108,29 @@ function updateSpeed(){
   speed.y = (mousePos.y-windowHalfY) / 10;
 }
 
-function createLight() {
-  light = new THREE.HemisphereLight(0xffffff, 0xffffff, .3)
-  scene.add(light);
-  shadowLight = new THREE.DirectionalLight(0xffffff, .8);
-  shadowLight.position.set(1, 1, 1);
- 	scene.add(shadowLight);
-}
+THREE.DRACOLoader.setDecoderPath( 'js/libs/draco/gltf/' );
+  var loader = new THREE.GLTFLoader();
+  loader.setDRACOLoader( new THREE.DRACOLoader() );
 
-  THREE.DRACOLoader.setDecoderPath( 'js/libs/draco/gltf/' );
-		var loader = new THREE.GLTFLoader();
-    loader.setDRACOLoader( new THREE.DRACOLoader() );
+  loader.load('../assets/pink_fish.gltf', function ( gltf ) {
+    fish = gltf.scene;
 
-		loader.load('../assets/pink_fish.gltf', function ( gltf ) {
-      fish = gltf.scene;
+    fish.scale.set(50, 50, 50);
+        
+    scene.add(fish);
+    light = new THREE.HemisphereLight(0xffffff, 0xffffff, .3)
+    scene.add(light);
+    shadowLight = new THREE.DirectionalLight(0xffffff, .8);
+    shadowLight.position.set(1, 1, 1);
+      scene.add(shadowLight);
 
-      fish.scale.set(50, 50, 50);
-          
-      scene.add(fish);
-      light = new THREE.HemisphereLight(0xffffff, 0xffffff, .3)
-      scene.add(light);
-      shadowLight = new THREE.DirectionalLight(0xffffff, .8);
-      shadowLight.position.set(1, 1, 1);
-       scene.add(shadowLight);
+    mixer = new THREE.AnimationMixer(fish);
 
-      mixer = new THREE.AnimationMixer(fish);
-	
-			mixer.clipAction( gltf.animations[0]).play();
-      mixer.clipAction( gltf.animations[1]).play();
-      
-      loop();
-  });
+    mixer.clipAction( gltf.animations[0]).play();
+    mixer.clipAction( gltf.animations[1]).play();
+    
+    loop();
+});
 
 function loop() {  
   fish.rotation.z += ((-speed.y/50)-fish.rotation.z)/smoothing;
@@ -163,7 +155,19 @@ function loop() {
     }
   }
   
+  // for (var vertexIndex = 0; vertexIndex < fish.geometry.vertices.length; vertexIndex++)
+  // {       
+  //   var localVertex = fish.geometry.vertices[vertexIndex].clone();
+  //   var globalVertex = fish.matrix.multiplyVector3(localVertex);
+  //   var directionVector = globalVertex.subSelf( fish.position );
 
+  //   var ray = new THREE.Ray( fish.position, directionVector.clone().normalize() );
+  //   var collisionResults = ray.intersectObjects( flyingParticles );
+  //   if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
+  //   {
+  //     collisionResults[0].intersectObjects.position.x += -100;
+  //   }
+  // }
 
   renderer.render(scene, camera);
   stats.update();
