@@ -188,23 +188,16 @@ function createParticle(){
   var rnd = Math.random();
   
   //box
-  if (rnd<.33){
+  if (rnd<.5){
     w = 20 + getRandomArbitrary()*30;
     h = 20 + getRandomArbitrary()*30;
     d = 20 + getRandomArbitrary()*30;
     geometryCore = new THREE.BoxGeometry(w,h,d);
   }
   // Tetrahedron
-  else if (rnd<.66){
+  else{
     ray = 20 + getRandomArbitrary()*30;
     geometryCore = new THREE.TetrahedronGeometry(ray);
-  }
-  // sphere (but random on segment vert and hor)
-  else{
-    ray = 5+getRandomArbitrary()*30;
-    sh = 7 + Math.floor(getRandomArbitrary()*2);
-    sv = 7 + Math.floor(getRandomArbitrary()*2);
-    geometryCore = new THREE.SphereGeometry(ray, sh, sv);
   }
   
   var materialCore = new THREE.MeshLambertMaterial({
@@ -214,35 +207,65 @@ function createParticle(){
   particle = new THREE.Mesh(geometryCore, materialCore);
   geometryCore.computeBoundingSphere();
   particle.boundingSphere=geometryCore.boundingSphere;
+//  particle.name='obstacle';
   //console.log(particle.boundingSphere.radius);
   return particle;
 }
 
-
+function createFood(){
+  var particle, geometryCore, ray, w,h,d, sh, sv;
+  ray = 5+getRandomArbitrary()*30;
+  sh = 7 + Math.floor(getRandomArbitrary()*2);
+  sv = 7 + Math.floor(getRandomArbitrary()*2);
+  geometryCore = new THREE.SphereGeometry(ray, sh, sv);
+  var materialCore = new THREE.MeshLambertMaterial({
+    color: 0x000000,
+    shading: THREE.FlatShading
+  });
+  particle = new THREE.Mesh(geometryCore, materialCore);
+  return particle;
+}
 
 function getParticle(){
   
-  if (waitingParticles.length && flyingParticles.length<10) {
+  if (waitingParticles.length ) {
     return waitingParticles.pop();
   }else{
     return createParticle();
   }
 }
+function getFood(){ 
+  if (waitingParticles.length) {
+    return waitingParticles.pop();
+  }else{
+    return createFood();
+  }
+}
 
-function flyParticle(){
+function flyObject(){
   if(flyingParticles.length<10){
+    if(Math.random()>.1 && Math.random()<.3){
+      var particle=getFood();
+      particle.position.x = xLimit;
+      particle.position.y = -yLimit + Math.random()*yLimit*2;
+      particle.position.z = zLocationParticles;
+      particle.name='food';
+      var s = .1 + getRandomArbitrary();
+      particle.scale.set(s,s,s);
+      flyingParticles.push(particle);
+      scene.add(particle);
+    }
     var particle = getParticle();
     particle.position.x = xLimit;
     particle.position.y = -yLimit + Math.random()*yLimit*2;
     particle.position.z = zLocationParticles;
+    particle.name='obstacle';
     var s = .1 + getRandomArbitrary();
     particle.scale.set(s,s,s);
     flyingParticles.push(particle);
      scene.add(particle);
   }
 }
-
-
 
 function getRandomColor(){
   var col = hexToRgb(colors[Math.floor(Math.random()*colors.length)]);
@@ -293,5 +316,5 @@ init();
 createStats();
 createLight();
 createParticle();
-setInterval(flyParticle, 100);
+setInterval(flyObject, 500);
 setInterval(detectCollision, 0.000001);
