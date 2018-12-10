@@ -336,6 +336,44 @@ function flyObject(){
     scene.add(particle);
   }
 }
+var text2;
+var controls = new function () {
+
+    this.size = 90;
+    this.height = 90;
+    this.bevelThickness = 2;
+    this.bevelSize = 0.5;
+    this.bevelEnabled = true;
+    this.bevelSegments = 3;
+    this.bevelEnabled = true;
+    this.curveSegments = 12;
+    this.steps = 1;
+    this.font = "helvetiker";
+    this.weight = "normal";
+    this.asGeom = function () {
+        // remove the old plane
+        scene.remove(text2);
+        // create a new one
+
+        var options = {
+            size: controls.size,
+            height: controls.height,
+            weight: controls.weight,
+            font: controls.font,
+            bevelThickness: controls.bevelThickness,
+            bevelSize: controls.bevelSize,
+            bevelSegments: controls.bevelSegments,
+            bevelEnabled: controls.bevelEnabled,
+            curveSegments: controls.curveSegments,
+            steps: controls.steps
+        };
+
+        console.log(THREE.FontUtils.faces);
+        text2 = createMesh(new THREE.TextGeometry("Three.js", options));
+        scene.add(text2);
+    };
+
+};
 
 function getRandomColor(){
   var col = hexToRgb(colors[Math.floor(Math.random()*colors.length)]);
@@ -405,6 +443,11 @@ function detectCollision(){
   }
 }
 
+function gameOver(){
+  var el = document.getElementById('instructions');
+  el.innerHTML = '<p style="color:red; font-size:4em">Game Over</p>';
+  console.log("huft");
+}
 init();
 createStats();
 createLight();
@@ -414,3 +457,4 @@ createOrnamen();
 createParticle();
 setInterval(flyObject, 500);
 setInterval(detectCollision, 50);
+gameOver();
