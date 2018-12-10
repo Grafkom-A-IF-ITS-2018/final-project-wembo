@@ -56,37 +56,26 @@
             
 			THREE.DRACOLoader.setDecoderPath( 'js/libs/draco/gltf/' );
 			var loader = new THREE.GLTFLoader();
-            loader.setDRACOLoader( new THREE.DRACOLoader() );
-            
+      loader.setDRACOLoader( new THREE.DRACOLoader() );
 
 			loader.load('assets/pink_fish.gltf', function ( gltf ) {
-
-                
-                
         var model = gltf.scene;
-
 				console.log(model)
 
-        model.rotation.y += 3;
-                
+        model.rotation.y += 4;
 				model.position.set( 0, 0, 0 );
 				model.scale.set( 1, 1, 1 );
-				model.traverse( function ( child ) {
-                    if ( child.isMesh ){
-                        console.log(child.material);
-                    }
-				} );
                 
         scene.add( model );
 				mixer = new THREE.AnimationMixer( model );
 	
 				mixer.clipAction( gltf.animations[0]).play();
-				// //mixer.clipAction( gltf.animations[1]).play();
+				mixer.clipAction( gltf.animations[1]).play();
                 
-                animate();
+        animate();
 			}, undefined, function ( e ) {
 				console.error( e );
-            } );
+			});
             
 			window.onresize = function () {
 				camera.aspect = window.innerWidth / window.innerHeight;

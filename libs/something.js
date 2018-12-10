@@ -1,5 +1,5 @@
 var scene, camera,fieldOfView,aspesctRatio,nearPlane,farPlane,shadowLight,light,renderer,container,
-    HEIGHT,WIDTH,windowHalfX,windowHalfY,xLimit,yLimit,fish, heart;
+    HEIGHT,WIDTH,windowHalfX,windowHalfY,xLimit,yLimit,fish, heart, coral;
 
 var mixer = [];
 var numbers = [];
@@ -204,20 +204,9 @@ function createFish(){
 
 function createOrnamen() {
   setTimeout(function () {
-    loader.load('../assets/coral2.gltf', function ( gltf ) {
-      var coral = gltf.scene;
+    loader.load('../assets/coral3.gltf', function ( gltf ) {
+      coral = gltf.scene;
       coral.scale.set(90, 90, 90);
-      // //moving coral to the corners of canvas
-      // var plane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1));
-  
-      // var raycaster = new THREE.Raycaster();
-      // var corner = new THREE.Vector2();
-      // var cornerPoint = new THREE.Vector3();
-  
-      // corner.set(0.1, -1); // NDC of the bottom-left corner
-      // raycaster.setFromCamera(corner, camera);
-      // raycaster.ray.intersectPlane(plane, cornerPoint);
-      // coral.position.copy(cornerPoint).add(new THREE.Vector3(1, 1, -1));
       
       coral.position.y -= 0.975 * window.innerHeight;
       coral.position.z -= 0.2;
@@ -232,6 +221,44 @@ function createOrnamen() {
 
       loop();
     });
+
+    loader.load('../assets/coral4.gltf', function ( gltf ) {
+      coral = gltf.scene;
+      coral.scale.set(90, 90, 90);
+      
+      coral.position.y -= 0.975 * window.innerHeight;
+      coral.position.z -= 0.2;
+      coral.rotation.y += 1.55;
+      coral.rotation.x -= 0.25;
+      coral.rotation.z -= 0.25;
+  
+      scene.add(coral);
+  
+      mixer.push(new THREE.AnimationMixer(coral));
+      mixer[mixer.length-1].clipAction( gltf.animations[0]).play();
+
+      loop();
+    });
+
+    loader.load('../assets/coral5.gltf', function ( gltf ) {
+      coral = gltf.scene;
+      coral.scale.set(90, 90, 90);
+      
+      coral.position.y -= 0.975 * window.innerHeight;
+      coral.position.z -= 0.2;
+      coral.rotation.y += 1.55;
+      coral.rotation.x -= 0.25;
+      coral.rotation.z -= 0.25;
+  
+      scene.add(coral);
+  
+      mixer.push(new THREE.AnimationMixer(coral));
+      mixer[mixer.length-1].clipAction( gltf.animations[0]).play();
+
+      loop();
+    });
+
+
   }, 1000);
 }
 
