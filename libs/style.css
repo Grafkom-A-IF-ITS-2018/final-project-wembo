@@ -1,4 +1,4 @@
-/*@import url(https://fonts.googleapis.com/css?family=Open+Sans:800);*/
+@import url('https://fonts.googleapis.com/css?family=Neucha');
 
 #world{
   background: linear-gradient(#fca5f1, #b5ffff);
@@ -6,4 +6,30 @@
   width:100%;
   height:100%;
   overflow:hidden;
+}
+#instructions{
+  position:absolute;
+  width:100%;
+  top:50%;
+  margin: auto;
+  margin-top:80px;
+  font-family:'Neucha', cursive;
+  color:#ffffff;
+  font-size:2.8em;
+  text-transform: uppercase;
+  text-align : center;
+}
+
+#instructions .circle{
+  background-color: #ffffff;
+    border:3px solid #ffffff;
+    font-size: 50%;
+    color:pink;
+    border-radius:50%;
+    -moz-border-radius:50%;
+    -webkit-border-radius:50%;
+  }
+a { 
+    color: pink;
+    text-decoration: none;
 }
