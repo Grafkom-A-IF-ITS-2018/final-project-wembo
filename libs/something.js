@@ -251,8 +251,6 @@ function createNumber(i){
     var number = gltf.scene;
     number.scale.set(30, 30, 30);
     numbers.push(gltf);
-    return gltf;
-    
   });
 }
 
