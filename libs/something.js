@@ -2,6 +2,7 @@ var scene, camera,fieldOfView,aspesctRatio,nearPlane,farPlane,shadowLight,light,
     HEIGHT,WIDTH,windowHalfX,windowHalfY,xLimit,yLimit,fish, heart;
 
 var mixer = [];
+var numbers = [];
 
 var clock = new THREE.Clock();
 
@@ -197,6 +198,9 @@ function createFish(){
 
 function createOrnamen() {
   setTimeout(function () {
+    console.log(numbers);
+    scene.add(numbers[0].scene);
+    scene.remove(numbers[0].scene);
     loader.load('../assets/coral2.gltf', function ( gltf ) {
       var coral = gltf.scene;
       coral.scale.set(100, 100, 100);
@@ -223,8 +227,7 @@ function createOrnamen() {
   
       mixer.push(new THREE.AnimationMixer(coral));
       mixer[mixer.length-1].clipAction( gltf.animations[0]).play();
-  
-      console.log('yay')
+
       loop();
     });
   }, 1000);
@@ -238,13 +241,26 @@ function createHeart(i){
       heart.position.y = 0.6 * window.innerHeight;
       heart.position.x = (-0.7 + xx * i) * window.innerWidth;
       scene.add(heart);
-    return heart;
+      hearts.push(gltf);
+  });
+}
+
+function createNumber(i){
+  var path = '../assets/' + String(i) + '.gltf';
+  loader.load(path, function ( gltf ) {
+    var number = gltf.scene;
+    number.scale.set(30, 30, 30);
+    numbers.push(gltf);
   });
 }
 
 function createHeartNumber(){
-  for(var i=0;i<2;i++){
-    hearts.push(createHeart(i));
+  for(var i=0;i<5;i++){
+    createHeart(i);
+  }
+
+  for(var i=1;i<5;i++){
+    createNumber(i);
   }
 }
 
@@ -413,9 +429,9 @@ function detectCollision(){
     var yf=fish.position.y;
     var sf=fish.scale.x;
     if(isCollision(xp,yp,10,xf,yf,50)){
-      console.log(flyingParticles[i].name," food ",flyingParticles[i].name=="food");
+      //console.log(flyingParticles[i].name," food ",flyingParticles[i].name=="food");
       if(flyingParticles[i].name=="food"){
-        console.log("nabrak");
+        //console.log("nabrak");
         bite.pause();
         bite.currentTime = 0;
         pain.pause();
@@ -423,20 +439,22 @@ function detectCollision(){
         bite.play();
         
         skor++;
-        console.log("skor = ",skor);
+        //console.log("skor = ",skor);
         scene.remove(flyingParticles[i]);
       }
       else{
-        console.log("nabrak");
+        //console.log("nabrak");
         bite.pause();
         bite.currentTime = 0;
         pain.pause();
         pain.currentTime = 0;
         pain.play();
         scene.remove(flyingParticles[i]);
+        scene.remove(hearts.pop().scene);
+        console.log(hearts.length);
       }
       
-      console.log(flyingParticles[i]);
+      //console.log(flyingParticles[i]);
       flyingParticles.splice(i,1);
       i--;
     }
