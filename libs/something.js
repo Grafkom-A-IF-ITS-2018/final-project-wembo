@@ -203,25 +203,24 @@ function createOrnamen() {
     scene.remove(numbers[0].scene);
     loader.load('../assets/coral2.gltf', function ( gltf ) {
       var coral = gltf.scene;
-      coral.scale.set(100, 100, 100);
-
+      coral.scale.set(90, 90, 90);
+      // //moving coral to the corners of canvas
+      // var plane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1));
+  
+      // var raycaster = new THREE.Raycaster();
+      // var corner = new THREE.Vector2();
+      // var cornerPoint = new THREE.Vector3();
+  
+      // corner.set(0.1, -1); // NDC of the bottom-left corner
+      // raycaster.setFromCamera(corner, camera);
+      // raycaster.ray.intersectPlane(plane, cornerPoint);
+      // coral.position.copy(cornerPoint).add(new THREE.Vector3(1, 1, -1));
       
-      
-      //moving coral to the corners of canvas
-      var plane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1));
-  
-      var raycaster = new THREE.Raycaster();
-      var corner = new THREE.Vector2();
-      var cornerPoint = new THREE.Vector3();
-  
-      corner.set(0.1, -1); // NDC of the bottom-left corner
-      raycaster.setFromCamera(corner, camera);
-      raycaster.ray.intersectPlane(plane, cornerPoint);
-      coral.position.copy(cornerPoint).add(new THREE.Vector3(1, 1, -1));
-  
-      coral.rotation.y += 1.6;
-      coral.rotation.z -= 0.2;
-      coral.rotation.x -= 0.2;
+      coral.position.y -= 0.975 * window.innerHeight;
+      coral.position.z -= 0.2;
+      coral.rotation.y += 1.55;
+      coral.rotation.x -= 0.25;
+      coral.rotation.z -= 0.25;
   
       scene.add(coral);
   
