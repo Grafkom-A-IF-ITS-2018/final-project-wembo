@@ -3,6 +3,7 @@ var scene, camera,fieldOfView,aspesctRatio,nearPlane,farPlane,shadowLight,light,
 
 var mixer = [];
 var numbers = [];
+var score = [];
 
 var clock = new THREE.Clock();
 
@@ -142,11 +143,16 @@ function loop() {
   
   renderer.render(scene, camera);
   stats.update();
-  requestAnimationFrame(loop);
+  var id= requestAnimationFrame(loop);
   var delta = clock.getDelta();
 
   for (var i = 0; i < mixer.length; i++){
     mixer[i].update( delta );
+  }
+
+  if(hearts.length==0){
+    gameOver();
+    cancelAnimationFrame( id );
   }
 }
 
@@ -198,9 +204,6 @@ function createFish(){
 
 function createOrnamen() {
   setTimeout(function () {
-    console.log(numbers);
-    scene.add(numbers[0].scene);
-    scene.remove(numbers[0].scene);
     loader.load('../assets/coral2.gltf', function ( gltf ) {
       var coral = gltf.scene;
       coral.scale.set(90, 90, 90);
@@ -244,22 +247,21 @@ function createHeart(i){
   });
 }
 
-function createNumber(i){
+function createNumber(i,xx){
   var path = '../assets/' + String(i) + '.gltf';
   loader.load(path, function ( gltf ) {
-    var number = gltf.scene;
-    number.scale.set(30, 30, 30);
-    numbers.push(gltf);
+    var number = gltf;
+    number.scene.scale.set(30, 30, 30);
+    number.scene.position.y = 0.6 * window.innerHeight;
+    number.scene.position.x = (0.5 + xx) * window.innerWidth;
+    score.push(number);
+    scene.add(number.scene);
   });
 }
 
 function createHeartNumber(){
   for(var i=0;i<5;i++){
     createHeart(i);
-  }
-
-  for(var i=1;i<5;i++){
-    createNumber(i);
   }
 }
 
@@ -367,6 +369,37 @@ function hexToRgb(hex) {
   } : null;
 }
 
+function getNumber(i,xx){
+  console.log(Number(i))
+  console.log('yay')
+  console.log(numbers[i])
+  numbers[i].scene.position.y = 0.6 * window.innerHeight;
+  numbers[i].scene.position.x = (0.5 + xx) * window.innerWidth;
+  var temp=numbers[i];
+  scene.add(temp.scene);
+  score.push(temp);
+}
+function updateScore(){
+  while(score.length){
+    scene.remove(score.pop().scene);
+  }
+  var num = []
+  var temp = skor;
+  
+  if(temp==0) num.push(0);
+  while(temp>=1){
+    num.push(temp%10);
+    temp/=10;
+    temp=parseInt(temp);
+  }
+  console.log(num)
+  var xx = 0.1;
+  for(var i = num.length-1 ; i >= 0 ; i--){
+    createNumber(num[i],xx);
+    xx+=0.1
+  }
+}
+
 function isCollision(xp,yp,sp,xf,yf,sf) {
   var xCollide=false;
   var yCollide=false;
@@ -400,8 +433,9 @@ function detectCollision(){
         bite.play();
         
         skor++;
+        updateScore();
         //console.log("skor = ",skor);
-        scene.remove(flyingParticles[i]);
+        scene.remove(particle);
       }
       else{
         //console.log("nabrak");
@@ -422,6 +456,12 @@ function detectCollision(){
   }
 }
 
+function gameOver(){
+  var el = document.getElementById('instructions');
+  el.innerHTML = '<p style="color:red; font-size:3em;">Game Over</p>';
+  console.log("huft");
+  
+}
 init();
 createStats();
 createLight();
