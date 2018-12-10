@@ -258,13 +258,16 @@ function createParticle(){
 
 function createFood(){
   var particle, geometryCore, ray, w,h,d, sh, sv;
-  ray = 5+getRandomArbitrary()*30;
-  sh = 7 + Math.floor(getRandomArbitrary()*2);
-  sv = 7 + Math.floor(getRandomArbitrary()*2);
+  ray = 20+getRandomArbitrary()*30;
+  sh = 22 + Math.floor(getRandomArbitrary()*2);
+  sv = 22 + Math.floor(getRandomArbitrary()*2);
   geometryCore = new THREE.SphereGeometry(ray, sh, sv);
-  var materialCore = new THREE.MeshLambertMaterial({
-    color: 0x000000,
-    shading: THREE.FlatShading
+  var materialCore = new THREE.MeshPhongMaterial({
+    color: 0x4e5e5f,
+    ambient: 0xffffff,
+    emissive: 0x000000,
+    specular: 0x111111,
+    shininess: 31
   });
   particle = new THREE.Mesh(geometryCore, materialCore);
   return particle;
