@@ -110,7 +110,7 @@ function handleTouchMove(event) {
 }
 
 function updateSpeed(){
-  speed.x = (mousePos.x / WIDTH)*100;
+  speed.x = (mousePos.x / WIDTH)*50;
   speed.y = (mousePos.y-windowHalfY) / 10;
 }
 
@@ -386,4 +386,4 @@ createFish();
 createOrnamen();
 createParticle();
 setInterval(flyObject, 500);
-setInterval(detectCollision, 1);
+setInterval(detectCollision, 50);
