@@ -11,6 +11,7 @@ var flyingParticles = [];
     waitingParticles = [];
     waitingFood=[];
     zLocationParticles=0;
+  var hearts=[];
 // SPEED
 var speed = {x:0, y:0};
 var smoothing = 10;
@@ -229,32 +230,22 @@ function createOrnamen() {
   }, 1000);
 }
 
-function createHeartNumber(){
+function createHeart(i){
   loader.load('../assets/heart.gltf', function ( gltf ) {
-    var heart = [];
-
-    var xx = 0.1;
-    for(var i = 0; i < 2; i++){
-      var heart1 = gltf.scene;
-
-      heart1.scale.set(30, 30, 30);
-      heart1.position.y += 0.7 * HEIGHT;
-      heart1.position.x += xx * i * HEIGHT;
-      
-      heart.push(heart1);
-
-      console.log(xx * i);
-    }
-
-    console.log(heart);
-
-    for(var i = 0; i < 2; i++){
-      scene.add(heart[i]);
-    }
-
-
-    
+    var xx = 0.15;
+    var heart = gltf.scene;
+      heart.scale.set(30, 30, 30);
+      heart.position.y = 0.6 * HEIGHT;
+      heart.position.x = (-1.4 + xx * i) * HEIGHT;
+      scene.add(heart);
+    return heart;
   });
+}
+
+function createHeartNumber(){
+  for(var i=0;i<2;i++){
+    hearts.push(createHeart(i));
+  }
 }
 
 
