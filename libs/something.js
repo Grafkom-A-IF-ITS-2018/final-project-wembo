@@ -226,16 +226,34 @@ function createOrnamen() {
       console.log('yay')
       loop();
     });
-  }, 300);
+  }, 1000);
 }
 
 function createHeartNumber(){
   loader.load('../assets/heart.gltf', function ( gltf ) {
-    heart = gltf.scene;
+    var heart = [];
 
-    heart.scale.set(30, 30, 30);
-        
-    scene.add(heart);
+    var xx = 0.1;
+    for(var i = 0; i < 2; i++){
+      var heart1 = gltf.scene;
+
+      heart1.scale.set(30, 30, 30);
+      heart1.position.y += 0.7 * HEIGHT;
+      heart1.position.x += xx * i * HEIGHT;
+      
+      heart.push(heart1);
+
+      console.log(xx * i);
+    }
+
+    console.log(heart);
+
+    for(var i = 0; i < 2; i++){
+      scene.add(heart[i]);
+    }
+
+
+    
   });
 }
 
