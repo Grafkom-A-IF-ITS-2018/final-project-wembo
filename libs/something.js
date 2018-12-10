@@ -226,7 +226,7 @@ function createOrnamen() {
       console.log('yay')
       loop();
     });
-  }, 100);
+  }, 300);
 }
 
 function createHeartNumber(){
