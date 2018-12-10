@@ -1,0 +1,215 @@
+{
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5123,
+            "count" : 33792,
+            "max" : [
+                5973
+            ],
+            "min" : [
+                0
+            ],
+            "type" : "SCALAR"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 5974,
+            "max" : [
+                10.625,
+                19.961200714111328,
+                4.570099830627441
+            ],
+            "min" : [
+                -10.625,
+                0.046300001442432404,
+                -4.571199893951416
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5126,
+            "count" : 5974,
+            "max" : [
+                0.99981689453125,
+                1.0,
+                0.99981689453125
+            ],
+            "min" : [
+                -0.99981689453125,
+                -1.0,
+                -0.999847412109375
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 3,
+            "componentType" : 5126,
+            "count" : 5974,
+            "max" : [
+                1.0,
+                0.7435352206230164,
+                0.8040317296981812,
+                1.0
+            ],
+            "min" : [
+                -1.0,
+                -0.9999259114265442,
+                -0.8047415018081665,
+                1.0
+            ],
+            "type" : "VEC4"
+        },
+        {
+            "bufferView" : 4,
+            "componentType" : 5126,
+            "count" : 5974,
+            "max" : [
+                1.0,
+                1.0
+            ],
+            "min" : [
+                0.0,
+                0.14660000801086426
+            ],
+            "type" : "VEC2"
+        }
+    ],
+    "asset" : {
+        "generator" : "Khronos Blender glTF 2.0 exporter",
+        "version" : "2.0"
+    },
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 67584,
+            "byteOffset" : 0,
+            "target" : 34963
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 71688,
+            "byteOffset" : 67584,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 71688,
+            "byteOffset" : 139272,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 95584,
+            "byteOffset" : 210960,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 47792,
+            "byteOffset" : 306544,
+            "target" : 34962
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 354336,
+            "uri" : "heart.bin"
+        }
+    ],
+    "materials" : [
+        {
+            "alphaMode" : "BLEND",
+            "name" : "Heart",
+            "pbrMetallicRoughness" : {
+                "baseColorFactor" : [
+                    0.6980000138282776,
+                    0.050999999046325684,
+                    0.050999999046325684,
+                    1.0
+                ],
+                "metallicFactor" : 0.0
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "Heart",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "NORMAL" : 2,
+                        "POSITION" : 1,
+                        "TANGENT" : 3,
+                        "TEXCOORD_0" : 4
+                    },
+                    "indices" : 0,
+                    "material" : 0
+                }
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "name" : "Camera",
+            "rotation" : [
+                0.483536034822464,
+                0.33687159419059753,
+                -0.20870360732078552,
+                0.7804827094078064
+            ],
+            "translation" : [
+                7.481131553649902,
+                5.34366512298584,
+                6.5076398849487305
+            ]
+        },
+        {
+            "mesh" : 0,
+            "name" : "Heart",
+            "rotation" : [
+                -0.0,
+                1.6292068494294654e-07,
+                -1.0,
+                0.0
+            ],
+            "scale" : [
+                -0.15148890018463135,
+                -0.15148890018463135,
+                -0.15148890018463135
+            ]
+        },
+        {
+            "name" : "Lamp",
+            "rotation" : [
+                0.16907575726509094,
+                0.7558802962303162,
+                -0.27217137813568115,
+                0.570947527885437
+            ],
+            "scale" : [
+                1.0,
+                1.0,
+                0.9999999403953552
+            ],
+            "translation" : [
+                4.076245307922363,
+                5.903861999511719,
+                -1.0054539442062378
+            ]
+        }
+    ],
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                1,
+                2,
+                0
+            ]
+        }
+    ]
+}
