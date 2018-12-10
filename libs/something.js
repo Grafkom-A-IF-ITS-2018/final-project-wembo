@@ -235,13 +235,13 @@ function createOrnamen() {
 
 function createHeart(i){
   loader.load('../assets/heart.gltf', function ( gltf ) {
-    var xx = 0.15;
+    var xx = 0.1;
     var heart = gltf.scene;
       heart.scale.set(30, 30, 30);
-      heart.position.y = 0.6 * HEIGHT;
-      heart.position.x = (-1.4 + xx * i) * HEIGHT;
+      heart.position.y = 0.6 * window.innerHeight;
+      heart.position.x = (-0.7 + xx * i) * window.innerWidth;
       scene.add(heart);
-    return heart;
+      hearts.push(gltf);
   });
 }
 
@@ -257,8 +257,8 @@ function createNumber(i){
 }
 
 function createHeartNumber(){
-  for(var i=0;i<2;i++){
-    hearts.push(createHeart(i));
+  for(var i=0;i<5;i++){
+    createHeart(i);
   }
 
   for(var i=1;i<5;i++){
@@ -393,9 +393,9 @@ function detectCollision(){
     var yf=fish.position.y;
     var sf=fish.scale.x;
     if(isCollision(xp,yp,10,xf,yf,50)){
-      console.log(flyingParticles[i].name," food ",flyingParticles[i].name=="food");
+      //console.log(flyingParticles[i].name," food ",flyingParticles[i].name=="food");
       if(flyingParticles[i].name=="food"){
-        console.log("nabrak");
+        //console.log("nabrak");
         bite.pause();
         bite.currentTime = 0;
         pain.pause();
@@ -403,20 +403,22 @@ function detectCollision(){
         bite.play();
         
         skor++;
-        console.log("skor = ",skor);
+        //console.log("skor = ",skor);
         scene.remove(flyingParticles[i]);
       }
       else{
-        console.log("nabrak");
+        //console.log("nabrak");
         bite.pause();
         bite.currentTime = 0;
         pain.pause();
         pain.currentTime = 0;
         pain.play();
         scene.remove(flyingParticles[i]);
+        scene.remove(hearts.pop().scene);
+        console.log(hearts.length);
       }
       
-      console.log(flyingParticles[i]);
+      //console.log(flyingParticles[i]);
       flyingParticles.splice(i,1);
       i--;
     }
