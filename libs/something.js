@@ -8,7 +8,8 @@ var clock = new THREE.Clock();
 // PARTICLES
 var colors = ['#dff69e', '#00ceff', '#002bca', '#ff00e0', '#3f159f', '#71b583', '#00a2ff'];
 var flyingParticles = []; 
-		waitingParticles = [];
+    waitingParticles = [];
+    waitingFood=[];
     zLocationParticles=0;
 // SPEED
 var speed = {x:0, y:0};
@@ -131,7 +132,8 @@ function loop() {
     particle.position.y += (1/particle.scale.x) * speed.y *.2;
     if (particle.position.x < -xLimit - 80){ 
       scene.remove(particle);
-      waitingParticles.push(flyingParticles.splice(i,1)[0]); 
+      if(particle.name=="obstacle") waitingParticles.push(flyingParticles.splice(i,1)[0]);
+      else waitingFood.push(flyingParticles.splice(i,1)[0]);
       i--;
     }
   }
@@ -277,8 +279,8 @@ function getParticle(){
   }
 }
 function getFood(){ 
-  if (waitingParticles.length) {
-    return waitingParticles.pop();
+  if (waitingFood.length) {
+    return waitingFood.pop();
   }else{
     return createFood();
   }
@@ -287,15 +289,15 @@ function getFood(){
 function flyObject(){
   if(flyingParticles.length<10){
     if(Math.random()>.1 && Math.random()<.3){
-      var particle=getFood();
-      particle.position.x = xLimit;
-      particle.position.y = -yLimit + Math.random()*yLimit*2;
-      particle.position.z = zLocationParticles;
-      particle.name="food";
+      var particle2=getFood();
+      particle2.position.x = xLimit;
+      particle2.position.y = -yLimit + Math.random()*yLimit*2;
+      particle2.position.z = zLocationParticles;
+      particle2.name="food";
       var s = .1 + getRandomArbitrary();
-      particle.scale.set(s,s,s);
-      flyingParticles.push(particle);
-      scene.add(particle);
+      particle2.scale.set(s,s,s);
+      flyingParticles.push(particle2);
+      scene.add(particle2);
     }
     var particle = getParticle();
     particle.position.x = xLimit;
@@ -327,18 +329,16 @@ function hexToRgb(hex) {
 function isCollision(xp,yp,sp,xf,yf,sf) {
   var xCollide=false;
   var yCollide=false;
-  sf*=2;
-  sp*=2;
   if(xp<xf&&xp+sp>=xf-sf)xCollide=true;
   if(xf<xp&&xf+sf>=xp-sp) xCollide=true;
   if(xf==xp) xCollide=true;
   if(yp<yf&&yp+sp>=yf-sf) yCollide=true;
-  if(yf<yp&&yf+sf>=yp-sp) yCollide=true;
+  if(yf<yp&&yf+sf*2>=yp-sp*2) yCollide=true;
   if(yf==yp) yCollide=true;
   if(xCollide&&yCollide) return true;
   return false;
 }
-
+var skor=0;
 function detectCollision(){
   for(var i=0;i<flyingParticles.length;i++){
     var particle=flyingParticles[i];
@@ -348,19 +348,33 @@ function detectCollision(){
     var xf=fish.position.x;
     var yf=fish.position.y;
     var sf=fish.scale.x;
-    if(isCollision(xp,yp,sp,xf,yf,sf)){
+    if(isCollision(xp,yp,10,xf,yf,50)){
       console.log(flyingParticles[i].name," food ",flyingParticles[i].name=="food");
       if(flyingParticles[i].name=="food"){
+        console.log("nabrak");
+        bite.pause();
+        bite.currentTime = 0;
+        pain.pause();
+        pain.currentTime = 0;
         bite.play();
+        
+        skor++;
+        console.log("skor = ",skor);
+        scene.remove(flyingParticles[i]);
       }
       else{
+        console.log("nabrak");
+        bite.pause();
+        bite.currentTime = 0;
+        pain.pause();
+        pain.currentTime = 0;
         pain.play();
+        scene.remove(flyingParticles[i]);
       }
-      scene.remove(flyingParticles[i]);
-      console.log(flyingParticles.length);
+      
+      console.log(flyingParticles[i]);
       flyingParticles.splice(i,1);
-      console.log(flyingParticles.length);
-      break;
+      i--;
     }
   }
 }
@@ -372,4 +386,4 @@ createFish();
 createOrnamen();
 createParticle();
 setInterval(flyObject, 500);
-setInterval(detectCollision, 2);
+setInterval(detectCollision, 1);
