@@ -232,11 +232,11 @@ function createOrnamen() {
 
 function createHeart(i){
   loader.load('../assets/heart.gltf', function ( gltf ) {
-    var xx = 0.15;
+    var xx = 0.1;
     var heart = gltf.scene;
       heart.scale.set(30, 30, 30);
-      heart.position.y = 0.6 * HEIGHT;
-      heart.position.x = (-1.4 + xx * i) * HEIGHT;
+      heart.position.y = 0.6 * window.innerHeight;
+      heart.position.x = (-0.7 + xx * i) * window.innerWidth;
       scene.add(heart);
     return heart;
   });
