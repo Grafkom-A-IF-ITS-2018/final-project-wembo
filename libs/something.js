@@ -2,6 +2,7 @@ var scene, camera,fieldOfView,aspesctRatio,nearPlane,farPlane,shadowLight,light,
     HEIGHT,WIDTH,windowHalfX,windowHalfY,xLimit,yLimit,fish, heart;
 
 var mixer = [];
+var numbers = [];
 
 var clock = new THREE.Clock();
 
@@ -197,6 +198,9 @@ function createFish(){
 
 function createOrnamen() {
   setTimeout(function () {
+    console.log(numbers);
+    scene.add(numbers[0].scene);
+    scene.remove(numbers[0].scene);
     loader.load('../assets/coral2.gltf', function ( gltf ) {
       var coral = gltf.scene;
       coral.scale.set(100, 100, 100);
@@ -223,8 +227,7 @@ function createOrnamen() {
   
       mixer.push(new THREE.AnimationMixer(coral));
       mixer[mixer.length-1].clipAction( gltf.animations[0]).play();
-  
-      console.log('yay')
+
       loop();
     });
   }, 1000);
@@ -242,9 +245,24 @@ function createHeart(i){
   });
 }
 
+function createNumber(i){
+  var path = '../assets/' + String(i) + '.gltf';
+  loader.load(path, function ( gltf ) {
+    var number = gltf.scene;
+    number.scale.set(30, 30, 30);
+    numbers.push(gltf);
+    return gltf;
+    
+  });
+}
+
 function createHeartNumber(){
   for(var i=0;i<2;i++){
     hearts.push(createHeart(i));
+  }
+
+  for(var i=1;i<5;i++){
+    createNumber(i);
   }
 }
 
