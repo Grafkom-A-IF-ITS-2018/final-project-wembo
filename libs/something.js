@@ -1,5 +1,5 @@
 var scene, camera,fieldOfView,aspesctRatio,nearPlane,farPlane,shadowLight,light,renderer,container,
-    HEIGHT,WIDTH,windowHalfX,windowHalfY,xLimit,yLimit,fish;
+    HEIGHT,WIDTH,windowHalfX,windowHalfY,xLimit,yLimit,fish, heart;
 
 var mixer = [];
 
@@ -192,37 +192,51 @@ function createFish(){
   });
 }
 
-function createOrnamen(){
-  loader.load('../assets/coral1.gltf', function ( gltf ) {
-    var coral = gltf.scene;
+function createOrnamen() {
+  setTimeout(function () {
+    loader.load('../assets/coral2.gltf', function ( gltf ) {
+      var coral = gltf.scene;
+      coral.scale.set(100, 100, 100);
 
-    coral.scale.set(50, 50, 50);
-    
-    //moving coral to the corners of canvas
-    var plane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1));
-
-    var raycaster = new THREE.Raycaster();
-    var corner = new THREE.Vector2();
-    var cornerPoint = new THREE.Vector3();
-
-    corner.set(-0.8, -1); // NDC of the bottom-left corner
-    raycaster.setFromCamera(corner, camera);
-    raycaster.ray.intersectPlane(plane, cornerPoint);
-    coral.position.copy(cornerPoint).add(new THREE.Vector3(1, 1, -1));
-
-    coral.rotation.y += 5;
-    coral.rotation.x -= 0.25;
-
-    scene.add(coral);
-
-    mixer.push(new THREE.AnimationMixer(coral));
-    mixer[mixer.length-1].clipAction( gltf.animations[0]).play();
-    loop();
-  });
-
-
-
+      
+      
+      //moving coral to the corners of canvas
+      var plane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1));
+  
+      var raycaster = new THREE.Raycaster();
+      var corner = new THREE.Vector2();
+      var cornerPoint = new THREE.Vector3();
+  
+      corner.set(0.1, -1); // NDC of the bottom-left corner
+      raycaster.setFromCamera(corner, camera);
+      raycaster.ray.intersectPlane(plane, cornerPoint);
+      coral.position.copy(cornerPoint).add(new THREE.Vector3(1, 1, -1));
+  
+      coral.rotation.y += 1.6;
+      coral.rotation.z -= 0.2;
+      coral.rotation.x -= 0.2;
+  
+      scene.add(coral);
+  
+      mixer.push(new THREE.AnimationMixer(coral));
+      mixer[mixer.length-1].clipAction( gltf.animations[0]).play();
+  
+      console.log('yay')
+      loop();
+    });
+  }, 100);
 }
+
+function createHeartNumber(){
+  loader.load('../assets/heart.gltf', function ( gltf ) {
+    heart = gltf.scene;
+
+    heart.scale.set(30, 30, 30);
+        
+    scene.add(heart);
+  });
+}
+
 
 function createParticle(){
   var particle, geometryCore, ray, w,h,d, sh, sv;
@@ -368,6 +382,7 @@ function detectCollision(){
 init();
 createStats();
 createLight();
+createHeartNumber();
 createFish();
 createOrnamen();
 createParticle();
