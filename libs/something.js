@@ -208,13 +208,24 @@ function createOrnamen() {
       coral = gltf.scene;
       coral.scale.set(90, 90, 90);
       
-      coral.position.y -= 0.975 * window.innerHeight;
-      coral.position.z -= 0.2;
+      var plane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1));
+  
+      var raycaster = new THREE.Raycaster();
+      var corner = new THREE.Vector2();
+      var cornerPoint = new THREE.Vector3();
+  
+      corner.set(0, -1.1); // NDC of the bottom-left corner
+      raycaster.setFromCamera(corner, camera);
+      raycaster.ray.intersectPlane(plane, cornerPoint);
+      coral.position.copy(cornerPoint).add(new THREE.Vector3(1, 1, -1));
+
       coral.rotation.y += 1.55;
       coral.rotation.x -= 0.25;
       coral.rotation.z -= 0.25;
   
       scene.add(coral);
+
+      console.log(coral);
   
       mixer.push(new THREE.AnimationMixer(coral));
       mixer[mixer.length-1].clipAction( gltf.animations[0]).play();
@@ -226,8 +237,17 @@ function createOrnamen() {
       coral = gltf.scene;
       coral.scale.set(90, 90, 90);
       
-      coral.position.y -= 0.975 * window.innerHeight;
-      coral.position.z -= 0.2;
+      var plane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1));
+  
+      var raycaster = new THREE.Raycaster();
+      var corner = new THREE.Vector2();
+      var cornerPoint = new THREE.Vector3();
+  
+      corner.set(0, -1.1); // NDC of the bottom-left corner
+      raycaster.setFromCamera(corner, camera);
+      raycaster.ray.intersectPlane(plane, cornerPoint);
+      coral.position.copy(cornerPoint).add(new THREE.Vector3(1, 1, -1));
+
       coral.rotation.y += 1.55;
       coral.rotation.x -= 0.25;
       coral.rotation.z -= 0.25;
@@ -244,8 +264,17 @@ function createOrnamen() {
       coral = gltf.scene;
       coral.scale.set(90, 90, 90);
       
-      coral.position.y -= 0.975 * window.innerHeight;
-      coral.position.z -= 0.2;
+      var plane = new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1));
+  
+      var raycaster = new THREE.Raycaster();
+      var corner = new THREE.Vector2();
+      var cornerPoint = new THREE.Vector3();
+  
+      corner.set(0, -1.1); // NDC of the bottom-left corner
+      raycaster.setFromCamera(corner, camera);
+      raycaster.ray.intersectPlane(plane, cornerPoint);
+      coral.position.copy(cornerPoint).add(new THREE.Vector3(1, 1, -1));
+
       coral.rotation.y += 1.55;
       coral.rotation.x -= 0.25;
       coral.rotation.z -= 0.25;
@@ -259,6 +288,7 @@ function createOrnamen() {
     });
 
 
+
   }, 1000);
 }
 
@@ -269,6 +299,9 @@ function createHeart(i){
       heart.scale.set(30, 30, 30);
       heart.position.y = 0.6 * window.innerHeight;
       heart.position.x = (-0.7 + xx * i) * window.innerWidth;
+
+      
+
       scene.add(heart);
       hearts.push(gltf);
   });
